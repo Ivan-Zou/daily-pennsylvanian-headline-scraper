@@ -13,7 +13,7 @@ import requests
 import loguru
 
 
-def scrape_data_point():
+def scrape_headline_data_point():
     """
     Scrapes the main headline from The Daily Pennsylvanian home page.
 
@@ -31,6 +31,34 @@ def scrape_data_point():
         loguru.logger.info(f"Data point: {data_point}")
         return data_point
 
+
+def scrape_data_point():
+    """
+    Scrapes all the featured headlines from The Daily Pennsylvanian home page.
+
+    Returns:
+        str: The headline texts if found, otherwise an empty string.
+    """
+    req = requests.get("https://www.thedp.com")
+    loguru.logger.info(f"Request URL: {req.url}")
+    loguru.logger.info(f"Request status code: {req.status_code}")
+
+    if req.ok:
+        soup = bs4.BeautifulSoup(req.text, "html.parser")
+        # Get the container with all the featured articles
+        featured_articles = soup.find("div", class_="__flexy-box")
+        article_headlines = ""
+        # iterate through all the articles under the Featured section
+        for article in featured_articles.children:
+            # check if there is an article
+            if not article.text.isspace():
+                # get the article headline and format it
+                article_headline = article.get_text(separator=" (", strip=True)
+                article_headline += "), "
+                # add the retrieved headline to the string of headlines
+                article_headlines += article_headline
+        loguru.logger.info(f"Data point: {article_headlines}")
+        return article_headlines
 
 if __name__ == "__main__":
 
