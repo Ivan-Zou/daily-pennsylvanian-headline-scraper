@@ -54,7 +54,7 @@ def scrape_data_point():
             if not article.text.isspace():
                 # get the article headline and format it
                 article_headline = article.get_text(separator=" (", strip=True)
-                article_headline += "), "
+                article_headline += "), \n"
                 # add the retrieved headline to the string of headlines
                 article_headlines += article_headline
         loguru.logger.info(f"Data point: {article_headlines}")
